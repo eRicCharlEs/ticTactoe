@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 /**
  *
- * @author herna1135
+ * @author herna1135 I CHANGED THIS
  */
 
 public class TicTac {
