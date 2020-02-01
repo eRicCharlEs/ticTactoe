@@ -29,7 +29,7 @@ public static char[][] board = new char[BS][BS];
         {
             //display the new board
             displayBoard(); 
-            //get which player is going to place their piece
+            //get which player is going to place their piece ERIC
             curPlay = maxPlays % 2;
             
             //changes the formatting stuff
