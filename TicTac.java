@@ -16,10 +16,10 @@ public class TicTac {
     // 3x3 two-dimensional array representing board elements
     private static char[][] board = new char[BOARDSIZE][BOARDSIZE]; 
 
-    // Player one boolean flag
+    // Player one boolean flagm --> Need to find a way to utilize
     private static boolean firstPlayer = true;
 
-    // Game over boolean flag
+    // Game over boolean flag --> Need to find a way to utilize
     private static boolean gameOver = false;
 
     /** main **/
@@ -79,19 +79,21 @@ public class TicTac {
             // Prompts player to enter move
             System.out.print("Player " + player + "'s: Enter Row( 0, 1 or 2 ): ");
             row = playerInput.nextInt();
+
             System.out.print("\nPlayer " + player + "'s Enter col( 0, 1 or 2 ): ");
             column = playerInput.nextInt();
 
-            while(validMove(column, row) == false) {
+            while(validMove(row, column) == false) {
                 // Prompts player to enter move
                 System.out.print("Player " + player + "'s: Enter Row( 0, 1 or 2 ): ");
                 row = playerInput.nextInt();
+
                 System.out.print("\nPlayer " + player + "'s Enter col( 0, 1 or 2 ): ");
                 column = playerInput.nextInt();
             }
 
             // Place player move on board
-            printSymbol(column, row, player);
+            printSymbol(row, column, player);
 
             // Print the results of current move
             results = printStatus(player);
@@ -110,11 +112,13 @@ public class TicTac {
             System.out.println("Player " + player + " wins!");
             status = 1;
         }
-        else if(results == Status.DRAW) {
+        
+        if(results == Status.DRAW) {
             System.out.println("Draw"); 
             status = 1;
         }
-        else {
+
+        if(results == Status.CONTINUE) {
             System.out.println("Continue");
             status = 0;
         }
@@ -123,39 +127,83 @@ public class TicTac {
     }
 
     private static Status gameStatus() {
+        // Incrementers 
+        int i = 0; // Row
+        int j = 0; // Column
+
         // Moves count 
         int countXs = 0;
         int countOs = 0;
 
-        for (int i = 0; i < BOARDSIZE; i++) {
-
-            for (int j = 0; j < BOARDSIZE; j++) {
-
+        /**** I think this works ****/
+        // Check for horizontal victory
+        for(i = 0; i < BOARDSIZE; i++) {
+            for(j = 0; j < BOARDSIZE; j++) {
                 if(board[i][j] == 'O') countOs++;
                 else if(board[i][j] == 'X')countXs++;
             }
 
-            if(countOs == BOARDSIZE || countXs == BOARDSIZE) return Status.WIN;
+            // Check status after each row
+            if(countOs == BOARDSIZE || countXs == BOARDSIZE) {
+                return Status.WIN;
+            }
+            else {
+                // Reset count
+                countOs = 0;
+                countXs = 0;
+            }
+        }
 
-            countXs = 0;
+        /**** Appears to be working ****/
+        // Check for veritcal victory
+        for(i = 0; i < BOARDSIZE; i++) {
+            for(j = 0; j < BOARDSIZE; j++) {
+                if(board[j][i] == 'O') countOs++;
+                else if(board[j][i] == 'X')countXs++;
+            }
+
+            // Check status after each row
+            if(countOs == BOARDSIZE || countXs == BOARDSIZE) {
+                return Status.WIN;
+            }
+            else {
+                // Reset count
+                countOs = 0;
+                countXs = 0;
+            }
+        }
+
+        /**** This on works ****/
+        // Check diagonal top left to bottom right.
+        for (i = 0, j= 0; i < BOARDSIZE ; i++, j++) {
+            if (board[i][j] == 'O') countOs++;
+            else if(board[i][j] == 'X') countXs++;
+        }
+        if(countXs == BOARDSIZE || countOs == BOARDSIZE) {
+            System.out.println("Top left to bottom right");
+            return Status.WIN;
+        }
+        else {
+            // Reset count
             countOs = 0;
+            countXs = 0;
         }
-        countXs = 0;
-        countOs = 0;
 
-        //check diagonal right
-        for (int i = 0, j= 0; i <BOARDSIZE ; i++, j++) {
+        /**** This Works ****/
+        // Check diagonal bottom left to top right
+        for (i = 0, j= BOARDSIZE-1; i < BOARDSIZE; i++, j--) {
             if (board[i][j] == 'O') countOs++;
             else if(board[i][j] == 'X') countXs++;
         }
-        if(countXs == BOARDSIZE || countOs == BOARDSIZE) return Status.WIN;
-
-        //check diagonal left
-        for (int i = BOARDSIZE-1, j= BOARDSIZE-1; i >= 0 ; i--, j--) {
-            if (board[i][j] == 'O') countOs++;
-            else if(board[i][j] == 'X') countXs++;
+        if(countXs == BOARDSIZE || countOs == BOARDSIZE) {
+            System.out.println("Bottom left to top right");
+            return Status.WIN;
         }
-        if(countXs == BOARDSIZE || countOs == BOARDSIZE) return Status.WIN;
+        else {
+            // Reset count
+            countOs = 0;
+            countXs = 0;
+        }
 
         return Status.CONTINUE;
     }
@@ -173,21 +221,29 @@ public class TicTac {
         System.out.println("|_______|_______|_______|");
     }
 
-    private static void printSymbol(int column, int row, char value) {
+    private static void printSymbol(int row, int column, char value) {
         // Place player symbol
-        board[column][row] = value;
+        board[row][column] = value;
 
         // Display the board
         printBoard(); 
     }
 
-    private static boolean validMove(int column, int row) {
+    private static boolean validMove(int row, int column) {
+
+        if (row >= 3 || column >= 3) {
+            System.out.println("Invalid input: Please the values 0, 1, or 2.");
+        }
+
         // Check if the position is available
-        if(board[column][row] != ' '){
-            System.out.println("That position is unavailable. Try again.");
+        if(board[row][column] != ' '){
+            System.out.println("Position unavailable. Try again.");
             return false;
         }
+
         // Move is valid
         return true;
     }  
+
+
 }
