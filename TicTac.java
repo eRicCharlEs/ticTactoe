@@ -18,37 +18,45 @@ public class TicTac {
     private static char[][] board = new char[BOARDSIZE][BOARDSIZE]; 
 
     // Player one boolean flag
-    private boolean firstPlayer = true;
+    private static boolean firstPlayer = true;
 
     // Game over boolean flag
-    private boolean gameOver = false;
+    private static boolean gameOver = false;
 
     /** main **/
     public static void main(String[] args) {
-        
-        Scanner input = new Scanner(System.in); //takes in user input
-        //ints to hold row and col place //curplay holds which player is playing
-        int rPlace, cPlace, curPlay; 
-          //counter to make sure it doesnt go over 9 plus helps determine player
-        int maxPlays = 9; 
-        //helps with the formatting of the question
+        // Scanner for player input
+        Scanner playerInput = new Scanner(System.in); 
+
+        // Row and column positioin 
+        int rPlace, cPlace;
+
+        /********* Do we need this? *********/
+        // Current player 
+        int curPlay; 
+
+        // Maximum amount of moves
+        int MAX_PLAYS = 9; 
+
+        // Player icon: 'x' = player one, 'o' = player two
         char player = ' ';
         
-        //for loops to fill up the 2D array with blank spaces
+        /********* I guess I'm not sure what this is doing yet. Initializing the board? *********/
+        // Loop through array and setup board
         for(int i = 0; i < BOARDSIZE; i++)
             for(int j = 0 ; j < BOARDSIZE; j++)
                 board[i][j] = ' ';
-        
-        //stops when the max number of plays it reached
-        while(maxPlays != 0)
-        {
-            //display the new board
-            displayBoard(); 
 
-            //get which player is going to place their piece ERIC
-            curPlay = maxPlays % 2;
+        // Stops when the max number of plays it reached or the game is won
+        while(MAX_PLAYS != 0 && gameOver == false)
+        {
+            // Display the board
+            printBoard(); 
+
+            // Determines player's move
+            curPlay = MAX_PLAYS % 2;
             
-            //changes the formatting stuff
+            // Changes the formatting stuff
             switch(curPlay)
             {
                 case 0:
@@ -59,21 +67,25 @@ public class TicTac {
                     break;              
             }
             
-            //prompts user to enter the place they want to play
+            // Prompts player to enter move
             System.out.print("Player " + player + "'s: Enter Row( 0, 1 or 2 ): ");
-            rPlace = input.nextInt();
+            rPlace = playerInput.nextInt();
+
             System.out.print("\nPlayer " + player + "'s Enter col( 0, 1 or 2 ): ");
-            cPlace = input.nextInt();
+            cPlace = playerInput.nextInt();
             
-            //changes the place of the board from blank space to letter
+            // Place player's move on board
             board[rPlace][cPlace] = player;
             
-            //decrements max plays so we dont go over 9
-            maxPlays--;
+            // Reduce amount of plays
+            MAX_PLAYS--;
+
+            // Close scanner
+            playerInput.close();
         }  
     }
     
-    public static void displayBoard()
+    public static void printBoard()
     {
         System.out.println(" _______________________");
         System.out.println("|       |       |       |");
