@@ -4,11 +4,26 @@ import java.util.Scanner;
  * @author herna1135
  */
 
+ // Enumeration to represent the status of the final game results
+ enum Status
+ {
+     WIN, DRAW, CONTINUE;
+ }
+
 public class TicTac {
-//board size constant
-public static int BS = 3;
-//global 2D array
-public static char[][] board = new char[BS][BS]; 
+    //board size constant
+    private static int BOARDSIZE = 3;
+
+    // 3x3 two-dimensional array representing board elements
+    private static char[][] board = new char[BOARDSIZE][BOARDSIZE]; 
+
+    // Player one boolean flag
+    private boolean firstPlayer = true;
+
+    // Game over boolean flag
+    private boolean gameOver = false;
+
+    /** main **/
     public static void main(String[] args) {
         
         Scanner input = new Scanner(System.in); //takes in user input
@@ -20,8 +35,8 @@ public static char[][] board = new char[BS][BS];
         char player = ' ';
         
         //for loops to fill up the 2D array with blank spaces
-        for(int i = 0; i < BS; i++)
-            for(int j = 0 ; j < BS; j++)
+        for(int i = 0; i < BOARDSIZE; i++)
+            for(int j = 0 ; j < BOARDSIZE; j++)
                 board[i][j] = ' ';
         
         //stops when the max number of plays it reached
@@ -29,6 +44,7 @@ public static char[][] board = new char[BS][BS];
         {
             //display the new board
             displayBoard(); 
+
             //get which player is going to place their piece ERIC
             curPlay = maxPlays % 2;
             
