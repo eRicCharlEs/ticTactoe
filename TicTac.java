@@ -10,19 +10,19 @@ enum Status {
 }
 
 public class TicTac {
-    //board size constant
+    // Board size constant
     private static int BOARDSIZE = 3;
 
     // 3x3 two-dimensional array representing board elements
     private static char[][] board = new char[BOARDSIZE][BOARDSIZE]; 
 
-    // Player one boolean flagm --> Need to find a way to utilize
+    // Player one boolean flag --> Need to find a way to utilize
     private static boolean firstPlayer = true;
 
     // Game over boolean flag --> Need to find a way to utilize
     private static boolean gameOver = false;
 
-    /** main **/
+    /**** main ****/
     public static void main(String[] args) {
         // Start the game 
         play();
@@ -37,112 +37,102 @@ public class TicTac {
         int column = 0;
 
         // Player icon: 'x' = player one, 'o' = player two
-        char player = ' ';
+        char playerIcon = ' ';
+        int player = 0;
 
-        /********* Do we need this? *********/
-        // Current player 
-        int curPlay; 
-
-        // Maximum amount of moves
-        int MAX_PLAYS = 9; 
-
-        // int results flag
-        int results = 0;
-
-        // Loop through array and initialize to ' '
+        // Set up empty board
         for(int i = 0; i < BOARDSIZE; i++)
             for(int j = 0 ; j < BOARDSIZE; j++)
                 board[i][j] = ' ';
 
-        // Display the board
+        // Display the empty board
         printBoard(); 
 
-        // Stops when the max number of plays it reached or the game is won
-        while(results == 0) {
+        // While the game continues
+        while(gameOver == false){
 
-            // Determines player's move
-            curPlay = MAX_PLAYS % 2;
-
-            // Changes the formatting stuff
-            switch(curPlay) {
-                case 0:
-                    player = 'O';
-                    break;
-                case 1:
-                    player = 'X';
-                    break;              
+            // Determine who's turn
+            if(firstPlayer == true) {
+                player = 1;
+                playerIcon = 'X';
+            }
+            else { 
+                player = 2;
+                playerIcon = 'O';
             }
 
-            // Reduce amount of plays
-            MAX_PLAYS--;
-
-            // Prompts player to enter move
-            System.out.print("Player " + player + "'s: Enter Row( 0, 1 or 2 ): ");
-            row = playerInput.nextInt();
-
-            System.out.print("\nPlayer " + player + "'s Enter col( 0, 1 or 2 ): ");
-            column = playerInput.nextInt();
-
-            while(validMove(row, column) == false) {
-                // Prompts player to enter move
-                System.out.print("Player " + player + "'s: Enter Row( 0, 1 or 2 ): ");
+            // Continue asking for input if the move is not valid
+            do {
+                // Prompt player to enter move
+                System.out.print("Player " + playerIcon + "'s: Enter Row( 0, 1 or 2 ): ");
                 row = playerInput.nextInt();
-
-                System.out.print("\nPlayer " + player + "'s Enter col( 0, 1 or 2 ): ");
+               
+                System.out.print("\nPlayer " + playerIcon + "'s Enter col( 0, 1 or 2 ): ");
                 column = playerInput.nextInt();
+            } while(validMove(row, column) == false);
+
+            // Place player's move on board
+            printSymbol(row, column, playerIcon);
+
+            // Print the results and determine status of the game
+            if(printStatus(player) == 0) {
+                gameOver = true;
             }
-
-            // Place player move on board
-            printSymbol(row, column, player);
-
-            // Print the results of current move
-            results = printStatus(player);
-        } 
-
+        }
+        // Game over message
+        System.out.println("--> GAME OVER <---");
+        
         // Close scanner
         playerInput.close();
     }
     
     private static int printStatus(int player) {
-
+        // Get the status of the game
         Status results = gameStatus();
-        int status = 0;
+        int status = 1;
 
+        // Victory
         if(results == Status.WIN){
-            System.out.println("Player " + player + " wins!");
-            status = 1;
+            if(player == 1) {
+                System.out.println("Player X wins!");
+            }
+            else {
+                System.out.println("Player O wins!");
+            }
+            status = 0;
         }
         
+        // Draw
         if(results == Status.DRAW) {
             System.out.println("Draw"); 
-            status = 1;
+            status = 0;
         }
 
+        // Continue
         if(results == Status.CONTINUE) {
             System.out.println("Continue");
-            status = 0;
+            status = 1;
         }
 
         return status;
     }
 
     private static Status gameStatus() {
-        // Incrementers 
         int i = 0; // Row
         int j = 0; // Column
+        int maxMoves = BOARDSIZE * BOARDSIZE;
+        int moveCount = 0;
 
         // Moves count 
         int countXs = 0;
         int countOs = 0;
 
-        /**** I think this works ****/
         // Check for horizontal victory
         for(i = 0; i < BOARDSIZE; i++) {
             for(j = 0; j < BOARDSIZE; j++) {
                 if(board[i][j] == 'O') countOs++;
                 else if(board[i][j] == 'X')countXs++;
             }
-
             // Check status after each row
             if(countOs == BOARDSIZE || countXs == BOARDSIZE) {
                 return Status.WIN;
@@ -154,18 +144,16 @@ public class TicTac {
             }
         }
 
-        /**** Appears to be working ****/
         // Check for veritcal victory
         for(i = 0; i < BOARDSIZE; i++) {
             for(j = 0; j < BOARDSIZE; j++) {
                 if(board[j][i] == 'O') countOs++;
                 else if(board[j][i] == 'X')countXs++;
             }
-
             // Check status after each row
             if(countOs == BOARDSIZE || countXs == BOARDSIZE) {
                 return Status.WIN;
-            }
+            } 
             else {
                 // Reset count
                 countOs = 0;
@@ -173,14 +161,12 @@ public class TicTac {
             }
         }
 
-        /**** This on works ****/
         // Check diagonal top left to bottom right.
         for (i = 0, j= 0; i < BOARDSIZE ; i++, j++) {
             if (board[i][j] == 'O') countOs++;
             else if(board[i][j] == 'X') countXs++;
         }
         if(countXs == BOARDSIZE || countOs == BOARDSIZE) {
-            System.out.println("Top left to bottom right");
             return Status.WIN;
         }
         else {
@@ -189,14 +175,12 @@ public class TicTac {
             countXs = 0;
         }
 
-        /**** This Works ****/
         // Check diagonal bottom left to top right
         for (i = 0, j= BOARDSIZE-1; i < BOARDSIZE; i++, j--) {
             if (board[i][j] == 'O') countOs++;
             else if(board[i][j] == 'X') countXs++;
         }
         if(countXs == BOARDSIZE || countOs == BOARDSIZE) {
-            System.out.println("Bottom left to top right");
             return Status.WIN;
         }
         else {
@@ -205,6 +189,15 @@ public class TicTac {
             countXs = 0;
         }
 
+        // Check for a draw
+        for(i = 0; i < BOARDSIZE; i++) {
+            for(j = 0 ; j < BOARDSIZE; j++) {
+                if(board[i][j] != ' ') moveCount++; 
+            }     
+        }
+        if(moveCount == maxMoves) return Status.DRAW;
+
+        // Continue 
         return Status.CONTINUE;
     }
 
@@ -225,14 +218,20 @@ public class TicTac {
         // Place player symbol
         board[row][column] = value;
 
+        // Switch turns
+        if(value == 'X') firstPlayer = false;
+        else if(value == 'O') firstPlayer = true;
+
         // Display the board
         printBoard(); 
     }
 
     private static boolean validMove(int row, int column) {
 
-        if (row >= 3 || column >= 3) {
+        // Make sure the user inputs a correct value
+        if (row >= BOARDSIZE || column >= BOARDSIZE) {
             System.out.println("Invalid input: Please the values 0, 1, or 2.");
+            return false;
         }
 
         // Check if the position is available
@@ -244,6 +243,4 @@ public class TicTac {
         // Move is valid
         return true;
     }  
-
-
 }
