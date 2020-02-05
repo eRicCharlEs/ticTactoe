@@ -16,10 +16,10 @@ public class TicTac {
     // 3x3 two-dimensional array representing board elements
     private static char[][] board = new char[BOARDSIZE][BOARDSIZE]; 
 
-    // Player one boolean flag --> Need to find a way to utilize
+    // Player one boolean flag 
     private static boolean firstPlayer = true;
 
-    // Game over boolean flag --> Need to find a way to utilize
+    // Game over boolean flag 
     private static boolean gameOver = false;
 
     /**** main ****/
